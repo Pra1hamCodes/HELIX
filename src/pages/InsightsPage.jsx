@@ -328,20 +328,25 @@ export default function InsightsPage() {
       {/* ── Class distribution breakdown ── */}
       <SectionTitle>Class Distribution</SectionTitle>
       <div style={{ background: 'rgba(4,8,18,0.7)', border: '1px solid rgba(0,245,255,0.07)', borderRadius: 12, padding: '16px 20px', marginBottom: 4 }}>
-        {labelCounts.sort((a, b) => b.count - a.count).map((lc, i) => {
-          const isBenign = lc.label === 'BENIGN'
-          const color    = isBenign ? '#00ff88' : ['#ff2244','#ff9900','#ffd60a','#7b2fff','#00f5ff','#ff6b6b','#a78bfa','#34d399'][i % 8]
-          const pct      = +((lc.count / analysis.totalRows) * 100).toFixed(1)
-          return (
-            <div key={lc.label} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '7px 0', borderBottom: i < labelCounts.length - 1 ? '1px solid rgba(0,245,255,0.04)' : 'none' }}>
-              <div style={{ width: 8, height: 8, borderRadius: '50%', background: color, flexShrink: 0 }} />
-              <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '0.7rem', color, minWidth: 200, flexShrink: 0 }}>{lc.label}</span>
-              <MiniBar pct={pct} color={color} />
-              <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '0.68rem', color: '#8a9db5', minWidth: 80, textAlign: 'right', flexShrink: 0 }}>{lc.count.toLocaleString()}</span>
-              <span style={{ fontFamily: 'Oxanium,monospace', fontSize: '0.68rem', fontWeight: 700, color, minWidth: 46, textAlign: 'right', flexShrink: 0 }}>{pct}%</span>
-            </div>
-          )
-        })}
+        {(() => {
+          const PALETTE = ['#ff2244','#ff9900','#ffd60a','#7b2fff','#00f5ff','#ff6b6b','#a78bfa','#34d399']
+          const sorted  = [...labelCounts].sort((a, b) => b.count - a.count)
+          let attackIdx = 0
+          return sorted.map((lc, i) => {
+            const isBenign = lc.label === 'BENIGN'
+            const color    = isBenign ? '#00ff88' : PALETTE[(attackIdx++) % PALETTE.length]
+            const pct      = +((lc.count / totalRows) * 100).toFixed(1)
+            return (
+              <div key={lc.label} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '7px 0', borderBottom: i < sorted.length - 1 ? '1px solid rgba(0,245,255,0.04)' : 'none' }}>
+                <div style={{ width: 8, height: 8, borderRadius: '50%', background: color, flexShrink: 0 }} />
+                <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '0.7rem', color, minWidth: 200, flexShrink: 0 }}>{lc.label}</span>
+                <MiniBar pct={pct} color={color} />
+                <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: '0.68rem', color: '#8a9db5', minWidth: 80, textAlign: 'right', flexShrink: 0 }}>{lc.count.toLocaleString()}</span>
+                <span style={{ fontFamily: 'Oxanium,monospace', fontSize: '0.68rem', fontWeight: 700, color, minWidth: 46, textAlign: 'right', flexShrink: 0 }}>{pct}%</span>
+              </div>
+            )
+          })
+        })()}
       </div>
 
       {/* ── Recommendations ── */}
